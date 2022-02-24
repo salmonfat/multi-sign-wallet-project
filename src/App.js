@@ -341,7 +341,7 @@ function App() {
           name="_id2"
           placeholder="case ID"
           value={inputValue._id2}/>
-          <button onClick={execute}>execute the case</button>
+          <button onClick={execute}>execute the case</button><span>It will be pass if half or more than half members agree</span>
       </div>
       <h4>Here can check detail of cases:</h4>
       <div>
