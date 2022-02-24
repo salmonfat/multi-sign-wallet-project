@@ -8,7 +8,7 @@ function App() {
   let array1=["","",0,"",""];
 
   const [isWallectConnect,setWallectConnet]=useState(false);
-  const [inputValue,setInPutValue]=useState({_target:"",_amount:"",_id:"",_id1:"",_id2:"",_id3:"",newMember:"",deleted:"",IsMember:""});
+  const [inputValue,setInPutValue]=useState({_target:"",_amount:"",_id:"",_id1:"",_id2:"",_id3:"",newMember:"",deleted:"",IsMember:"",depositInMonet:""});
   const [yourWalletAddress,setYourWalletAddress]=useState(null);
   const [addcaseId,setAddcaseId]=useState("");
   const [isMember,setIsMember]=useState("");
@@ -244,8 +244,27 @@ function App() {
       console.log(error);
     }
   }
+  const depositIn=async(event)=>{
+    event.preventDefault();
+    try{
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
 
-
+        console.log("depositing");
+        let txn=await signer.sendTransaction({
+          to:contractAddress,value:ethers.utils.parseEther(inputValue.depositInMonet)
+        });
+        await txn.wait();
+        console.log("deposit done",txn.hash);
+      }else{
+        console.log("Ethereum object not found, install Metamask.");
+        setError("Install a MetaMask wallet.");
+      }
+    }catch(error){
+      console.log(error);
+    }
+  }
   const handleInputChange = (event) => {
     setInPutValue(prevFormData => ({ ...prevFormData, [event.target.name]: event.target.value }));
   };
@@ -358,6 +377,16 @@ function App() {
           <p>Do you agree the case:  {custmember}</p>
           <p>How many members agreed: {cases[3].toString()}</p>
           <p>Be executed: {cases[4].toString()}</p>
+      </div>
+      <div>
+        <h4>Here to deposit ETH into multi sign wallet:</h4>
+      <input
+          type="text"
+          onChange={handleInputChange}
+          name="depositInMonet"
+          placeholder="deposit amount"
+          value={inputValue.depositInMonet}/>
+          <button onClick={depositIn}>send</button>
       </div>
     </main>
   );
